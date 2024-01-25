@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+	private const float Epsilon = 0.01f;
+
+	[SerializeField] private float _speed;
     [SerializeField] private Transform[] _targets;
 
 	private int _currentTarget = 0;
 	private void Update()
 	{
-		if (Vector2.Distance(transform.position, _targets[_currentTarget].position) < 0.01f)
+		if (Vector2.Distance(transform.position, _targets[_currentTarget].position) < Epsilon)
 		{
-			_currentTarget = (1 + _currentTarget) % _targets.Length;
+			_currentTarget = (++_currentTarget) % _targets.Length;
 			transform.localScale *= new Vector2(-1, 1);
 		}
 

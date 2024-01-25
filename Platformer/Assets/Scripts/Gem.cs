@@ -6,6 +6,11 @@ public class Gem : MonoBehaviour
 {
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		Destroy(gameObject);
+
+		if (collision.GetComponent<PlayerMover>() != null)
+		{
+			Debug.Log(true);
+			Destroy(gameObject);
+		}
 	}
 }
