@@ -36,15 +36,7 @@ public class PlayerMover : MonoBehaviour
 
 	private void SetDirection(float direction)
 	{
-		if (direction > 0)
-		{
-			_spriteRenderer.flipX = false;
-
-		}
-		else if (direction < 0)
-		{
-			_spriteRenderer.flipX = true;
-		}
+		_spriteRenderer.flipX = direction < 0;
 	}
 
 	private void Jump()

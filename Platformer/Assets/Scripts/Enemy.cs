@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -7,9 +5,10 @@ public class Enemy : MonoBehaviour
 	private const float Epsilon = 0.01f;
 
 	[SerializeField] private float _speed;
-    [SerializeField] private Transform[] _targets;
+	[SerializeField] private Transform[] _targets;
 
 	private int _currentTarget = 0;
+
 	private void Update()
 	{
 		if (Vector2.Distance(transform.position, _targets[_currentTarget].position) < Epsilon)
