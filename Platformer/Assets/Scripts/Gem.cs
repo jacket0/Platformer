@@ -1,16 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Gem : MonoBehaviour
 {
+	public event Action<Vector2> GemDestroed;
+
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-
 		if (collision.GetComponent<PlayerMover>() != null)
 		{
-			Debug.Log(true);
 			Destroy(gameObject);
+			GemDestroed?.Invoke(gameObject.transform.position);
 		}
 	}
 }

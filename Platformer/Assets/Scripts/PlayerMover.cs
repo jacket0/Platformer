@@ -6,8 +6,9 @@ public class PlayerMover : MonoBehaviour
 	private const float RayDistance = 1f;
 
 	private readonly string Horizontal = nameof(Horizontal);
+	public readonly int Speed = Animator.StringToHash(nameof(Speed));
 
-	[SerializeField] private float _speed = 1f;
+	[SerializeField] private float _velocity = 1f;
 	[SerializeField] private float _jumpForce = 1f;
 	[SerializeField] private LayerMask _layerMask;
 
@@ -27,9 +28,9 @@ public class PlayerMover : MonoBehaviour
 		float direction = Input.GetAxis(Horizontal);
 
 		SetDirection(direction);
-		_animator.SetFloat("Speed", Mathf.Abs(direction));
+		_animator.SetFloat(Speed, Mathf.Abs(direction));
 
-		transform.Translate(_speed * new Vector2(direction, 0f) * Time.deltaTime);
+		transform.Translate(_velocity * new Vector2(direction, 0f) * Time.deltaTime);
 		Jump();
 	}
 
