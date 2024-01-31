@@ -1,3 +1,4 @@
+using Cinemachine.Utility;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(SpriteRenderer))]
@@ -7,6 +8,9 @@ public class PlayerMover : MonoBehaviour
 
 	private readonly string Horizontal = nameof(Horizontal);
 	public readonly int Speed = Animator.StringToHash(nameof(Speed));
+	public readonly int DoJump = Animator.StringToHash(nameof(DoJump));
+	public readonly int IsFalling = Animator.StringToHash(nameof(IsFalling));
+
 
 	[SerializeField] private float _velocity = 1f;
 	[SerializeField] private float _jumpForce = 1f;
@@ -26,11 +30,18 @@ public class PlayerMover : MonoBehaviour
 	private void Update()
 	{
 		float direction = Input.GetAxis(Horizontal);
+		bool hit = Physics2D.Raycast(_rigidbody.position, Vector2.down, RayDistance, _layerMask);
 
+		_animator.SetBool(IsFalling, !hit);
 		SetDirection(direction);
 		_animator.SetFloat(Speed, Mathf.Abs(direction));
+		Vector2 vectorDirection = new Vector2(direction, 0f);
 
-		transform.Translate(_velocity * new Vector2(direction, 0f) * Time.deltaTime);
+		//var project = Vector3.ProjectOnPlane(transform.position, hit.normal);
+
+		//Debug.Log(project);
+		transform.Translate(_velocity * vectorDirection * Time.deltaTime);
+		//Debug.DrawRay(transform.position, project, Color.green);
 		Jump();
 	}
 
@@ -45,6 +56,7 @@ public class PlayerMover : MonoBehaviour
 
 		if (Input.GetKeyDown(KeyCode.W) && raycastHit2D)
 		{
+			_animator.SetTrigger(DoJump);
 			_rigidbody.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
 		}
 	}
