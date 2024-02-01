@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 	private Animator _animator;
 	private SpriteRenderer _spriteRenderer;
 
-	private void Awake()
+	private void Start()
 	{
 		_rigidbody = GetComponent<Rigidbody2D>();
 		_spriteRenderer = GetComponent<SpriteRenderer>();

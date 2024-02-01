@@ -1,20 +1,26 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
 public class Enemy : MonoBehaviour
 {
 	private const float Epsilon = 0.01f;
-
-	public readonly int Speed = Animator.StringToHash(nameof(Speed));
+	private const float RayDistance = 2f;
+	private const float Negative = -1f;
 
 	[SerializeField] private float _speed;
-	[SerializeField] private Transform[] _targets;
+	[SerializeField] private int _health = 100;
+	[SerializeField] private int _damage = 25;
+	[SerializeField] private LayerMask _groundMask;
+	[SerializeField] private Player _player;
 
-	private int _currentTarget = 0;
-	private bool _isFoundPlayer = false;
+	private int _currentTargetIndex = 0;
 	private Animator _animator;
-	private Player _playerTarget;
+	private RaycastHit2D _attackHit;
+	private Coroutine _coroutine;
+	private RaycastHit2D _platformBoarder;
+	private Vector3 _moveDirection = new Vector3(1, 0, 0);
 
 	private void Start()
 	{
@@ -23,32 +29,51 @@ public class Enemy : MonoBehaviour
 
 	private void Update()
 	{
+		_attackHit = Physics2D.Raycast(transform.position, Vector2.left * _moveDirection, RayDistance);
+		Debug.DrawRay(transform.position, Vector2.right * RayDistance, Color.red);
 
-		else
-		{
-			StartCoroutine(ReachTarget());
-		}
+		_platformBoarder = Physics2D.Raycast(transform.position + _moveDirection, Vector2.down, RayDistance, _groundMask);
+		Debug.DrawRay(transform.position + _moveDirection, Vector2.down * RayDistance, Color.blue);
 
+		_coroutine = StartCoroutine(Stalking());
+		ChangeDirection();
 	}
 
-	private void Catching() 
+	private void ChangeDirection()
 	{
-
-	}
-
-	private void Patrolling()
-	{
-		if (Vector2.Distance(transform.position, _targets[_currentTarget].position) > Epsilon)
+		if (!_platformBoarder)
 		{
-			_animator.SetFloat(Speed, 1);
-			transform.position = Vector2.MoveTowards(transform.position, _targets[_currentTarget].position, _speed * Time.deltaTime);
+			transform.localScale *= new Vector2(-1, 1);
+			_moveDirection *= Negative;
+
 		}
 	}
 
-	private IEnumerator ReachTarget()
+	public void Catching() 
 	{
-		_currentTarget = (++_currentTarget) % _targets.Length;
-		transform.localScale *= new Vector2(-1, 1);
-		yield return new WaitForSeconds(2);
-	}	
+		_coroutine = StartCoroutine(Follow());
+	}
+
+	private IEnumerator Follow()
+	{
+		while (Vector2.Distance(transform.position, _player.transform.position) > Epsilon)
+		{
+			transform.position = Vector2.MoveTowards(transform.position, _player.transform.position, Time.deltaTime);
+
+			yield return null;
+		}
+	}
+
+	public void Patrolling()
+	{
+		StopCoroutine(_coroutine);
+
+		_coroutine = StartCoroutine(Stalking());
+	}
+
+	private IEnumerator Stalking()
+	{
+		transform.Translate(_moveDirection * Time.deltaTime * _speed);
+		yield return null;
+	}
 }

@@ -21,7 +21,7 @@ public class GemsSpawner : MonoBehaviour
 
 	private void OnDisable()
 	{
-		StopCoroutine(_coroutine);
+		StopAllCoroutines();
 		_newGem.GemDestroed -= CreateNewGem;
 	}
 
