@@ -1,79 +1,97 @@
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 [RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
 public class Enemy : MonoBehaviour
 {
-	private const float Epsilon = 0.01f;
-	private const float RayDistance = 2f;
-	private const float Negative = -1f;
+	private const float PlatformHeightDistance = 2f;
+	private const float Vision = 4f;
+	private const float NegativeConst = -1f;
+
+	public readonly int DoAttack = Animator.StringToHash(nameof(DoAttack));
 
 	[SerializeField] private float _speed;
 	[SerializeField] private int _health = 100;
 	[SerializeField] private int _damage = 25;
+	[SerializeField] private float _attackReload = 1f;
 	[SerializeField] private LayerMask _groundMask;
+	[SerializeField] private LayerMask _playerMask;
 	[SerializeField] private Player _player;
 
-	private int _currentTargetIndex = 0;
 	private Animator _animator;
-	private RaycastHit2D _attackHit;
-	private Coroutine _coroutine;
-	private RaycastHit2D _platformBoarder;
+	private RaycastHit2D _platformBoarderHit;
+	private RaycastHit2D _backVisionHit;
 	private Vector3 _moveDirection = new Vector3(1, 0, 0);
+
 
 	private void Start()
 	{
 		_animator = GetComponent<Animator>();
+		_player.Attacking += GetDamaged;
 	}
 
 	private void Update()
 	{
-		_attackHit = Physics2D.Raycast(transform.position, Vector2.left * _moveDirection, RayDistance);
-		Debug.DrawRay(transform.position, Vector2.right * RayDistance, Color.red);
+		_platformBoarderHit = Physics2D.Raycast(transform.position + _moveDirection / 2, Vector2.down, PlatformHeightDistance, _groundMask);
+		Debug.DrawRay(transform.position + _moveDirection / 2, Vector2.down * PlatformHeightDistance, Color.blue);
 
-		_platformBoarder = Physics2D.Raycast(transform.position + _moveDirection, Vector2.down, RayDistance, _groundMask);
-		Debug.DrawRay(transform.position + _moveDirection, Vector2.down * RayDistance, Color.blue);
+		_backVisionHit = Physics2D.Raycast(transform.position, -_moveDirection, Vision, _playerMask);
+		Debug.DrawRay(transform.position, -_moveDirection * Vision, Color.black);
 
-		_coroutine = StartCoroutine(Stalking());
-		ChangeDirection();
+		transform.Translate(_platformBoarderHit.centroid.normalized * Time.deltaTime * _speed);
+
+		if (_backVisionHit)
+		{
+			ChangeDirection();
+		}
+		
+		if (!_platformBoarderHit)
+		{
+			ChangeDirection();
+		}
+	}
+
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		if (collision.GetComponent<Player>() != null)
+		{
+			StartCoroutine(Attacking());
+		}
+	}
+
+	private void GetDamaged(int damage)
+	{
+		if (_health > 0)
+		{
+			_health -= damage;
+			Debug.Log("Çהמנמגüו גנאדא: " + _health);
+		}
+	}
+
+	private void OnTriggerExit2D(Collider2D collision)
+	{
+		StopAllCoroutines();
+	}
+
+	private IEnumerator Attacking()
+	{
+		var wait = new WaitForSecondsRealtime(_attackReload);
+
+		while (true)
+		{
+			_animator.SetTrigger(DoAttack);
+			_player.DecreaseHealth(_damage);
+			yield return wait;
+		}
 	}
 
 	private void ChangeDirection()
 	{
-		if (!_platformBoarder)
-		{
-			transform.localScale *= new Vector2(-1, 1);
-			_moveDirection *= Negative;
-
-		}
-	}
-
-	public void Catching() 
-	{
-		_coroutine = StartCoroutine(Follow());
-	}
-
-	private IEnumerator Follow()
-	{
-		while (Vector2.Distance(transform.position, _player.transform.position) > Epsilon)
-		{
-			transform.position = Vector2.MoveTowards(transform.position, _player.transform.position, Time.deltaTime);
-
-			yield return null;
-		}
-	}
-
-	public void Patrolling()
-	{
-		StopCoroutine(_coroutine);
-
-		_coroutine = StartCoroutine(Stalking());
-	}
-
-	private IEnumerator Stalking()
-	{
-		transform.Translate(_moveDirection * Time.deltaTime * _speed);
-		yield return null;
+		transform.Rotate(new Vector3(0, 180, 0));
+		_moveDirection *= NegativeConst;
 	}
 }

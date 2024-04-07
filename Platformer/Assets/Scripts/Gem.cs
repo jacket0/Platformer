@@ -1,16 +1,18 @@
 using System;
 using UnityEngine;
 
-public class Gem : MonoBehaviour
+public class Gem : Item
 {
-	public event Action<Vector2> GemDestroed;
+	[SerializeField] private int _achievementPoints = 1;
+
+	public override event Action<Vector2> ItemPicked;
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (collision.GetComponent<Player>() != null)
 		{
 			Destroy(gameObject);
-			GemDestroed?.Invoke(gameObject.transform.position);
+			ItemPicked?.Invoke(gameObject.transform.position);
 		}
 	}
 }

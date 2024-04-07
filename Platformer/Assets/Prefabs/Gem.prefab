@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8107220523085147330}
   - component: {fileID: 6938629528405249964}
   - component: {fileID: -466021530425725601}
-  - component: {fileID: 3932622697996673923}
+  - component: {fileID: 3108139865055455513}
   - component: {fileID: 7156548735998794011}
   m_Layer: 0
   m_Name: Gem
@@ -108,7 +108,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3932622697996673923
+--- !u!114 &3108139865055455513
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,7 +117,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3800687581225693884}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e4d28237bcc44248925f0a1d298b5a7, type: 3}
+  m_Script: {fileID: 11500000, guid: 5392ada791a9f724f8e10e98fc7d2940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!61 &7156548735998794011
