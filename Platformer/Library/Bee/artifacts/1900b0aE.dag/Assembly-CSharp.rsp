@@ -383,6 +383,7 @@
 "Assets/Scripts/EnemyAttackBox.cs"
 "Assets/Scripts/Gem.cs"
 "Assets/Scripts/Healing.cs"
+"Assets/Scripts/Health.cs"
 "Assets/Scripts/Item.cs"
 "Assets/Scripts/Player.cs"
 -langversion:9.0

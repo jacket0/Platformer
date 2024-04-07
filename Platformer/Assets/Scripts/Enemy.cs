@@ -1,9 +1,6 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 [RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
 public class Enemy : MonoBehaviour
@@ -15,7 +12,6 @@ public class Enemy : MonoBehaviour
 	public readonly int DoAttack = Animator.StringToHash(nameof(DoAttack));
 
 	[SerializeField] private float _speed;
-	[SerializeField] private int _health = 100;
 	[SerializeField] private int _damage = 25;
 	[SerializeField] private float _attackReload = 1f;
 	[SerializeField] private LayerMask _groundMask;
@@ -26,12 +22,15 @@ public class Enemy : MonoBehaviour
 	private RaycastHit2D _platformBoarderHit;
 	private RaycastHit2D _backVisionHit;
 	private Vector3 _moveDirection = new Vector3(1, 0, 0);
+	private Health Health;
 
+	public event Action<int> UpdateHealth;
 
 	private void Start()
 	{
 		_animator = GetComponent<Animator>();
-		_player.Attacking += GetDamaged;
+		Health = GetComponent<Health>();
+		_player.Attacking += Health.DecreaseHealth;
 	}
 
 	private void Update()
@@ -48,7 +47,7 @@ public class Enemy : MonoBehaviour
 		{
 			ChangeDirection();
 		}
-		
+
 		if (!_platformBoarderHit)
 		{
 			ChangeDirection();
@@ -60,15 +59,6 @@ public class Enemy : MonoBehaviour
 		if (collision.GetComponent<Player>() != null)
 		{
 			StartCoroutine(Attacking());
-		}
-	}
-
-	private void GetDamaged(int damage)
-	{
-		if (_health > 0)
-		{
-			_health -= damage;
-			Debug.Log("Çהמנמגüו גנאדא: " + _health);
 		}
 	}
 
@@ -84,7 +74,7 @@ public class Enemy : MonoBehaviour
 		while (true)
 		{
 			_animator.SetTrigger(DoAttack);
-			_player.DecreaseHealth(_damage);
+			_player.Health.DecreaseHealth(_damage);
 			yield return wait;
 		}
 	}

@@ -16,7 +16,6 @@ public class Player : MonoBehaviour
 	public readonly int IsFalling = Animator.StringToHash(nameof(IsFalling));
 	public readonly int DoAttack = Animator.StringToHash(nameof(DoAttack));
 
-	[SerializeField] private int _health = 100;
 	[SerializeField] private int _damage = 20;
 	[SerializeField] private float _velocity = 1f;
 	[SerializeField] private float _jumpForce = 1f;
@@ -28,12 +27,14 @@ public class Player : MonoBehaviour
 	private Animator _animator;
 	private RaycastHit2D _attackHit;
 
+	public Health Health;
 	public event Action<int> Attacking;
 
 	private void Start()
 	{
 		_rigidbody = GetComponent<Rigidbody2D>();
 		_animator = GetComponent<Animator>();
+		Health = GetComponent<Health>();
 	}
 
 	private void Update()
@@ -50,30 +51,6 @@ public class Player : MonoBehaviour
 
 		Attack();
 		Jump();
-	}
-
-	public void DecreaseHealth(int damage)
-	{
-		if (_health > 0)
-		{
-			_health -= damage;
-			Debug.Log("Здоровье игрока: " + _health);
-		}
-	}
-
-	public void IncreaseHealth(int heal)
-	{
-		if (_health < 100)
-		{
-			_health += heal;
-		}
-
-		if (_health + heal > 100)
-		{
-			_health = 100;
-		}
-
-		Debug.Log("Здоровье игрока: " + _health);
 	}
 
 	private void SetDirection(ref float direction)
