@@ -24,6 +24,7 @@ public class Healing : Item
 
 	private void IncreaseHealthPoints(Vector2 position)
     {
+		Debug.Log(_player);
         _player.Health.IncreaseHealth(_healingPoints);
     }
 }

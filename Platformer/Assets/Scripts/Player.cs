@@ -1,16 +1,15 @@
-using Cinemachine.Utility;
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
+[RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(SurfaceSlider))]
 public class Player : MonoBehaviour
 {
 	private const float GroundDistance = 1.2f;
 	private const float AttackDistance = 2.5f;
 
 	private readonly string Horizontal = nameof(Horizontal);
-	
+
 	public readonly int Speed = Animator.StringToHash(nameof(Speed));
 	public readonly int DoJump = Animator.StringToHash(nameof(DoJump));
 	public readonly int IsFalling = Animator.StringToHash(nameof(IsFalling));
@@ -26,8 +25,9 @@ public class Player : MonoBehaviour
 	private Rigidbody2D _rigidbody;
 	private Animator _animator;
 	private RaycastHit2D _attackHit;
+	private SurfaceSlider _surfaceSlider;
 
-	public Health Health;
+	[HideInInspector] public Health Health;
 	public event Action<int> Attacking;
 
 	private void Start()
@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
 		_rigidbody = GetComponent<Rigidbody2D>();
 		_animator = GetComponent<Animator>();
 		Health = GetComponent<Health>();
+		_surfaceSlider = GetComponent<SurfaceSlider>();
 	}
 
 	private void Update()
@@ -43,14 +44,22 @@ public class Player : MonoBehaviour
 		RaycastHit2D groundHit = Physics2D.Raycast(_rigidbody.position, Vector2.down, GroundDistance, _groundLayer);
 
 		_animator.SetBool(IsFalling, !groundHit);
+
 		SetDirection(ref direction);
 		_animator.SetFloat(Speed, Mathf.Abs(direction));
-		Vector2 vectorDirection = new Vector2(direction, 0f);		
 
-		transform.Translate(_velocity * vectorDirection * Time.deltaTime);
-
+		Moving(direction);
+		
 		Attack();
 		Jump();
+	}
+
+	private void Moving(float direction)
+	{
+		Vector2 vectorDirection = new Vector2(direction, 0f);
+		transform.Translate(_velocity * Time.deltaTime * vectorDirection);
+		var force = _velocity * Time.deltaTime * vectorDirection;
+		
 	}
 
 	private void SetDirection(ref float direction)
@@ -63,7 +72,7 @@ public class Player : MonoBehaviour
 			direction *= -1;
 			_lookDirection = new Vector2(-1, 0);
 		}
-		else if (direction > 0) 
+		else if (direction > 0)
 		{
 			rotation = Quaternion.Euler(0, 0, 0);
 			_lookDirection = new Vector2(1, 0);
