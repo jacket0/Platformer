@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class Healing : Item 
+public class Healing : Item
 {
 	[SerializeField] private int _healingPoints = 40;
 
@@ -16,15 +13,16 @@ public class Healing : Item
 	{
 		if (collision.TryGetComponent(out _player))
 		{
-			Destroy(gameObject);
-			IncreaseHealthPoints(gameObject.transform.position);
 			ItemPicked.Invoke(gameObject.transform.position);
+			Destroy(gameObject);
+			IncreaseHealthPoints();
 		}
 	}
 
-	private void IncreaseHealthPoints(Vector2 position)
-    {
-		Debug.Log(_player);
-        _player.Health.IncreaseHealth(_healingPoints);
-    }
+	private void IncreaseHealthPoints()
+	{
+		Debug.Log(_player.Health);
+
+		_player.Health.IncreaseHealth(_healingPoints);
+	}
 }

@@ -9,23 +9,22 @@ public class BonusSpawner : MonoBehaviour
 
 	private Item _newBonus;
 	private Coroutine _coroutine;
-	private int _currentPoint = 0;
 
 	private void Start()
 	{
 		for (int i = 0; i < _spawnPoints.Length; i++)
 		{
-			CreateGem(_spawnPoints[i].position);
+			CreateBonus(_spawnPoints[i].position);
 		}
 	}
 
 	private void OnDisable()
 	{
 		StopAllCoroutines();
-		_newBonus.ItemPicked -= CreateNewGem;
+		_newBonus.ItemPicked -= CreateNewBonus;
 	}
 
-	private void CreateNewGem(Vector2 position)
+	private void CreateNewBonus(Vector2 position)
 	{
 		_coroutine = StartCoroutine(CreateWithDelay(position));
 	}
@@ -33,13 +32,12 @@ public class BonusSpawner : MonoBehaviour
 	private IEnumerator CreateWithDelay(Vector2 position)
 	{
 		yield return new WaitForSeconds(_waitSecond);
-		CreateGem(position);
-		_currentPoint = (++_currentPoint) % _spawnPoints.Length;
+		CreateBonus(position);
 	}
 
-	private void CreateGem(Vector2 position)
+	private void CreateBonus(Vector2 position)
 	{
 		_newBonus = Instantiate(_bonus, position, Quaternion.identity);
-		_newBonus.ItemPicked += CreateNewGem;
+		_newBonus.ItemPicked += CreateNewBonus;
 	}
 }

@@ -12,6 +12,7 @@ public class Health : MonoBehaviour
 		if (_health > _minHealth)
 		{
 			_health -= damage;
+			_health = Mathf.Clamp(_health, _minHealth, _maxHealth);
 			Debug.Log("Здоровье: " + _health);
 		}
 	}
@@ -19,7 +20,7 @@ public class Health : MonoBehaviour
 	public void IncreaseHealth(int heal)
 	{
 		_health += heal;
-		Mathf.Clamp(_health, _minHealth, _maxHealth);
+		_health = Mathf.Clamp(_health, _minHealth, _maxHealth);
 		Debug.Log("Излеченной здоровье: " + _health);
 	}
 }

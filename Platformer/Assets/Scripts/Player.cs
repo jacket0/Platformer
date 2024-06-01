@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(SurfaceSlider))]
+[RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
 public class Player : MonoBehaviour
 {
 	private const float GroundDistance = 1.2f;
@@ -25,9 +25,9 @@ public class Player : MonoBehaviour
 	private Rigidbody2D _rigidbody;
 	private Animator _animator;
 	private RaycastHit2D _attackHit;
-	private SurfaceSlider _surfaceSlider;
 
 	[HideInInspector] public Health Health;
+
 	public event Action<int> Attacking;
 
 	private void Start()
@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
 		_rigidbody = GetComponent<Rigidbody2D>();
 		_animator = GetComponent<Animator>();
 		Health = GetComponent<Health>();
-		_surfaceSlider = GetComponent<SurfaceSlider>();
+		Debug.Log(Health);
 	}
 
 	private void Update()
