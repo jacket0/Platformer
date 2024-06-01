@@ -386,7 +386,6 @@
 "Assets/Scripts/Health.cs"
 "Assets/Scripts/Item.cs"
 "Assets/Scripts/Player.cs"
-"Assets/Scripts/SurfaceSlider.cs"
 -langversion:9.0
 
 /deterministic

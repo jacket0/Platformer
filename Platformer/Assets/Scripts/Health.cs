@@ -9,12 +9,9 @@ public class Health : MonoBehaviour
 
 	public void DecreaseHealth(int damage)
 	{
-		if (_health > _minHealth)
-		{
-			_health -= damage;
-			_health = Mathf.Clamp(_health, _minHealth, _maxHealth);
-			Debug.Log("Çהמנמגüו: " + _health);
-		}
+		_health -= damage;
+		_health = Mathf.Clamp(_health, _minHealth, _maxHealth);
+		Debug.Log("Çהמנמגüו: " + _health);
 	}
 
 	public void IncreaseHealth(int heal)
