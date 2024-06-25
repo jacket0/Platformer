@@ -20,7 +20,11 @@ public class BonusSpawner : MonoBehaviour
 
 	private void OnDisable()
 	{
-		StopAllCoroutines();
+		if (_coroutine != null)
+		{
+			StopCoroutine(_coroutine);
+		}
+
 		_newBonus.ItemPicked -= CreateNewBonus;
 	}
 

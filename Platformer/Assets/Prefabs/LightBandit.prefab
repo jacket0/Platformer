@@ -50,7 +50,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 2
-  _health: 100
   _damage: 25
   _attackReload: 2
   _groundMask:
@@ -59,7 +58,6 @@ MonoBehaviour:
   _playerMask:
     serializedVersion: 2
     m_Bits: 64
-  _player: {fileID: 0}
 --- !u!95 &95346456782871180
 Animator:
   serializedVersion: 5

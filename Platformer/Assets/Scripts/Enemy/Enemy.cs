@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
+[RequireComponent(typeof(Animator), typeof(Health))]
 public class Enemy : MonoBehaviour
 {
 	private const float PlatformHeightDistance = 2f;
@@ -16,21 +16,19 @@ public class Enemy : MonoBehaviour
 	[SerializeField] private float _attackReload = 1f;
 	[SerializeField] private LayerMask _groundMask;
 	[SerializeField] private LayerMask _playerMask;
-	[SerializeField] private Player _player;
+	private Health _health;
 
 	private Animator _animator;
 	private RaycastHit2D _platformBoarderHit;
 	private RaycastHit2D _backVisionHit;
 	private Vector3 _moveDirection = new Vector3(1, 0, 0);
-	private Health Health;
 
 	public event Action<int> UpdateHealth;
 
 	private void Start()
 	{
 		_animator = GetComponent<Animator>();
-		Health = GetComponent<Health>();
-		_player.Attacking += Health.DecreaseHealth;
+		_health = GetComponent<Health>();
 	}
 
 	private void Update()
@@ -56,9 +54,9 @@ public class Enemy : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.GetComponent<Player>() != null)
+		if (collision.TryGetComponent(out Player player))
 		{
-			StartCoroutine(Attacking());
+			StartCoroutine(Attacking(player));
 		}
 	}
 
@@ -67,14 +65,14 @@ public class Enemy : MonoBehaviour
 		StopAllCoroutines();
 	}
 
-	private IEnumerator Attacking()
+	private IEnumerator Attacking(Player player)
 	{
 		var wait = new WaitForSecondsRealtime(_attackReload);
 
 		while (true)
 		{
 			_animator.SetTrigger(DoAttack);
-			_player.Health.DecreaseHealth(_damage);
+			player.Health.DecreaseHealth(_damage);
 			yield return wait;
 		}
 	}
