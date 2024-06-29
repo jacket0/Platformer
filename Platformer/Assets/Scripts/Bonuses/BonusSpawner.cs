@@ -25,10 +25,10 @@ public class BonusSpawner : MonoBehaviour
 			StopCoroutine(_coroutine);
 		}
 
-		_newBonus.ItemPicked -= CreateNewBonus;
+		_newBonus.ItemPicked -= StartCreatingCoroutine;
 	}
 
-	private void CreateNewBonus(Vector2 position)
+	private void StartCreatingCoroutine(Vector2 position)
 	{
 		_coroutine = StartCoroutine(CreateWithDelay(position));
 	}
@@ -42,6 +42,6 @@ public class BonusSpawner : MonoBehaviour
 	private void CreateBonus(Vector2 position)
 	{
 		_newBonus = Instantiate(_bonus, position, Quaternion.identity);
-		_newBonus.ItemPicked += CreateNewBonus;
+		_newBonus.ItemPicked += StartCreatingCoroutine;
 	}
 }

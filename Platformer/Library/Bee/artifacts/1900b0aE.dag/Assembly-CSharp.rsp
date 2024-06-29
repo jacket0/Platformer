@@ -384,7 +384,7 @@
 "Assets/Scripts/Bonuses/Item.cs"
 "Assets/Scripts/Characteristics/Health.cs"
 "Assets/Scripts/Enemy/Enemy.cs"
-"Assets/Scripts/Enemy/EnemyAttackBox.cs"
+"Assets/Scripts/Enemy/EnemyAttackZone.cs"
 "Assets/Scripts/Player/ItemsSearch.cs"
 "Assets/Scripts/Player/Player.cs"
 "Assets/Scripts/Player/PlayerMovement.cs"

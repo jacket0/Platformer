@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(PlayerMovement))]
 public class Player : MonoBehaviour
 {
 	private const float AttackDistance = 2.5f;
-
 
 	public readonly int DoAttack = Animator.StringToHash(nameof(DoAttack));
 
@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
 	private ItemsSearch _itemsSearch;
 	private PlayerMovement _movement;
 	private Animator _animator;
+	private float _attackReloadTime = 1f;
+	private float _lastAttackTime = 0f;
 
 	public event Action<int> Attacking;
 
@@ -38,14 +40,22 @@ public class Player : MonoBehaviour
 	{
 		_attackHit = Physics2D.Raycast(transform.position, _movement.LookDirection, AttackDistance, _enemyLayer);
 		Debug.DrawRay(transform.position, _movement.LookDirection * AttackDistance, Color.red);
+		_lastAttackTime += Time.deltaTime;
 
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			_animator.SetTrigger(DoAttack);
+			if (_lastAttackTime < _attackReloadTime)
+				return;
 
-			if (_attackHit)
+			_animator.SetTrigger(DoAttack);
+			_lastAttackTime = 0;
+
+			if (_attackHit.collider == null)
+				return;
+
+			if (_attackHit.collider.TryGetComponent(out Enemy enemy))
 			{
-				Attacking?.Invoke(_damage);
+				enemy.Health.DecreaseHealth(_damage);
 			}
 		}
 	}

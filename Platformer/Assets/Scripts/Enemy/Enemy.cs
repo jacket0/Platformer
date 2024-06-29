@@ -16,19 +16,31 @@ public class Enemy : MonoBehaviour
 	[SerializeField] private float _attackReload = 1f;
 	[SerializeField] private LayerMask _groundMask;
 	[SerializeField] private LayerMask _playerMask;
-	private Health _health;
+	[SerializeField] private EnemyAttackZone _attackZone;
 
 	private Animator _animator;
+	private Coroutine _coroutine;
 	private RaycastHit2D _platformBoarderHit;
 	private RaycastHit2D _backVisionHit;
 	private Vector3 _moveDirection = new Vector3(1, 0, 0);
+	private GameObject _attackCollider;
 
 	public event Action<int> UpdateHealth;
+
+	public Health Health { get; private set; }
+
 
 	private void Start()
 	{
 		_animator = GetComponent<Animator>();
-		_health = GetComponent<Health>();
+		Health = GetComponent<Health>();
+
+		_attackZone.Attacking += StartAttack;
+	}
+
+	private void OnDisable()
+	{
+		StopAttack();
 	}
 
 	private void Update()
@@ -52,24 +64,26 @@ public class Enemy : MonoBehaviour
 		}
 	}
 
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void StopAttack()
 	{
-		if (collision.TryGetComponent(out Player player))
+		if (_coroutine != null)
 		{
-			StartCoroutine(Attacking(player));
+			StopCoroutine(_coroutine);
 		}
+
+		_attackZone.Attacking -= StartAttack;
 	}
 
-	private void OnTriggerExit2D(Collider2D collision)
+	private void StartAttack(Player player)
 	{
-		StopAllCoroutines();
+		_coroutine = StartCoroutine(Attacking(player));
 	}
 
 	private IEnumerator Attacking(Player player)
 	{
 		var wait = new WaitForSecondsRealtime(_attackReload);
 
-		while (true)
+		while (_attackZone.IsTargetDetected)
 		{
 			_animator.SetTrigger(DoAttack);
 			player.Health.DecreaseHealth(_damage);
