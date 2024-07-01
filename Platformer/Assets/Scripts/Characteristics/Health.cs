@@ -11,13 +11,11 @@ public class Health : MonoBehaviour
 	{
 		_health -= damage;
 		_health = Mathf.Clamp(_health, _minHealth, _maxHealth);
-		Debug.Log("Здоровье: " + _health);
 	}
 
 	public void IncreaseHealth(int heal)
 	{
 		_health += heal;
 		_health = Mathf.Clamp(_health, _minHealth, _maxHealth);
-		Debug.Log("Излеченной здоровье: " + _health);
 	}
 }

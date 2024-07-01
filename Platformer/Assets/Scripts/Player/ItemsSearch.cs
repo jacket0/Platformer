@@ -15,13 +15,11 @@ public class ItemsSearch : MonoBehaviour
 		{
 			healing.InvokePickedEvent();
 			_player.Health.IncreaseHealth(healing.ExecuteHealing());
-			Debug.Log(healing.transform.position);
 		}
 		else if (collision.TryGetComponent(out Gem gem))
 		{
 			gem.InvokePickedEvent();
 			gem.ExecuteGemBonus();
-			Debug.Log(gem.transform.position);
 		}
 	}
 }

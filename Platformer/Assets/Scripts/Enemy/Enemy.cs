@@ -1,40 +1,38 @@
-using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator), typeof(Health))]
 public class Enemy : MonoBehaviour
 {
-	private const float PlatformHeightDistance = 2f;
 	private const float Vision = 4f;
-	private const float NegativeConst = -1f;
+	private const float Epsilon = 0.5f;
 
 	public readonly int DoAttack = Animator.StringToHash(nameof(DoAttack));
 
 	[SerializeField] private float _speed;
 	[SerializeField] private int _damage = 25;
 	[SerializeField] private float _attackReload = 1f;
-	[SerializeField] private LayerMask _groundMask;
 	[SerializeField] private LayerMask _playerMask;
 	[SerializeField] private EnemyAttackZone _attackZone;
+	[SerializeField] private Transform[] _patrolTargets;
+	[SerializeField] private Transform _playerTarget;
 
 	private Animator _animator;
 	private Coroutine _coroutine;
-	private RaycastHit2D _platformBoarderHit;
 	private RaycastHit2D _backVisionHit;
-	private Vector3 _moveDirection = new Vector3(1, 0, 0);
-	private GameObject _attackCollider;
-
-	public event Action<int> UpdateHealth;
+	private RaycastHit2D _forwardVisinHit;
+	private bool _IsChase = false;
+	private Quaternion _rightDirection = Quaternion.Euler(0, 0, 0);
+	private Quaternion _leftDirection = Quaternion.Euler(0, 180, 0);
+	private int _currentIndex;
 
 	public Health Health { get; private set; }
-
 
 	private void Start()
 	{
 		_animator = GetComponent<Animator>();
 		Health = GetComponent<Health>();
-
 		_attackZone.Attacking += StartAttack;
 	}
 
@@ -45,22 +43,54 @@ public class Enemy : MonoBehaviour
 
 	private void Update()
 	{
-		_platformBoarderHit = Physics2D.Raycast(transform.position + _moveDirection / 2, Vector2.down, PlatformHeightDistance, _groundMask);
-		Debug.DrawRay(transform.position + _moveDirection / 2, Vector2.down * PlatformHeightDistance, Color.blue);
+		_backVisionHit = Physics2D.Raycast(transform.position, Vector2.left, Vision, _playerMask);
+		Debug.DrawRay(transform.position, Vector2.left * Vision, Color.red);
+		_forwardVisinHit = Physics2D.Raycast(transform.position, Vector2.right, Vision, _playerMask);
 
-		_backVisionHit = Physics2D.Raycast(transform.position, -_moveDirection, Vision, _playerMask);
-		Debug.DrawRay(transform.position, -_moveDirection * Vision, Color.black);
 
-		transform.Translate(_platformBoarderHit.centroid.normalized * Time.deltaTime * _speed);
-
-		if (_backVisionHit)
+		if (_backVisionHit || _forwardVisinHit)
 		{
-			ChangeDirection();
+			_IsChase = true;
+		}
+		else
+		{
+			_IsChase = false;
+		}
+	}
+
+	private void FixedUpdate()
+	{
+		Move();
+	}
+
+	private void Move()
+	{
+		Vector2 currentTarget;
+
+		if (_IsChase)
+		{
+			currentTarget = _playerTarget.position;
+		}
+		else
+		{
+			currentTarget = _patrolTargets[_currentIndex].position;
 		}
 
-		if (!_platformBoarderHit)
+		transform.position = Vector2.MoveTowards(transform.position, currentTarget, _speed * Time.deltaTime);
+
+		if (Vector2.Distance(transform.position, _patrolTargets[_currentIndex].position) < Epsilon)
 		{
-			ChangeDirection();
+			_currentIndex = (++_currentIndex) % _patrolTargets.Length;
+
+		}
+
+		if (transform.position.x < currentTarget.x)
+		{
+			transform.rotation = Quaternion.Euler(0, 0, 0);
+		}
+		if (transform.position.x > currentTarget.x)
+		{
+			transform.rotation = Quaternion.Euler(0, 180, 0);
 		}
 	}
 
@@ -89,11 +119,5 @@ public class Enemy : MonoBehaviour
 			player.Health.DecreaseHealth(_damage);
 			yield return wait;
 		}
-	}
-
-	private void ChangeDirection()
-	{
-		transform.Rotate(new Vector3(0, 180, 0));
-		_moveDirection *= NegativeConst;
 	}
 }

@@ -5,9 +5,9 @@ public class EnemyAttackZone : MonoBehaviour
 {
 	[SerializeField] private int _damage = 20;
 
-	[HideInInspector] public event Action<Player> Attacking;
+	public event Action<Player> Attacking;
 
-	public bool IsTargetDetected = false;
+	public bool IsTargetDetected { get; private set; } = false;
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
