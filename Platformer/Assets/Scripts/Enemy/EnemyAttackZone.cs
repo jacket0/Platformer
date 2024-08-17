@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class EnemyAttackZone : MonoBehaviour
 {
-	[SerializeField] private int _damage = 20;
-
 	public event Action<Player> Attacking;
 
 	public bool IsTargetDetected { get; private set; } = false;
@@ -20,7 +18,7 @@ public class EnemyAttackZone : MonoBehaviour
 
 	private void OnTriggerExit2D(Collider2D collision)
 	{
-		if (collision.TryGetComponent(out Player player))
+		if (collision.TryGetComponent<Player>(out _))
 		{
 			IsTargetDetected = false;
 		}

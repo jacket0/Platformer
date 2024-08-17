@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Animator), typeof(Health))]
 public class Enemy : MonoBehaviour
 {
-	private const float Vision = 4f;
+	private const float DetectionDistance = 4f;
 	private const float Epsilon = 0.5f;
 
 	public readonly int DoAttack = Animator.StringToHash(nameof(DoAttack));
@@ -22,10 +22,8 @@ public class Enemy : MonoBehaviour
 	private Coroutine _coroutine;
 	private RaycastHit2D _backVisionHit;
 	private RaycastHit2D _forwardVisinHit;
-	private bool _IsChase = false;
-	private Quaternion _rightDirection = Quaternion.Euler(0, 0, 0);
-	private Quaternion _leftDirection = Quaternion.Euler(0, 180, 0);
 	private int _currentIndex;
+	private bool _isChase = false;
 
 	public Health Health { get; private set; }
 
@@ -43,23 +41,18 @@ public class Enemy : MonoBehaviour
 
 	private void Update()
 	{
-		_backVisionHit = Physics2D.Raycast(transform.position, Vector2.left, Vision, _playerMask);
-		Debug.DrawRay(transform.position, Vector2.left * Vision, Color.red);
-		_forwardVisinHit = Physics2D.Raycast(transform.position, Vector2.right, Vision, _playerMask);
-
+		_backVisionHit = Physics2D.Raycast(transform.position, Vector2.left, DetectionDistance, _playerMask);
+		_forwardVisinHit = Physics2D.Raycast(transform.position, Vector2.right, DetectionDistance, _playerMask);
 
 		if (_backVisionHit || _forwardVisinHit)
 		{
-			_IsChase = true;
+			_isChase = true;
 		}
 		else
 		{
-			_IsChase = false;
+			_isChase = false;
 		}
-	}
 
-	private void FixedUpdate()
-	{
 		Move();
 	}
 
@@ -67,7 +60,7 @@ public class Enemy : MonoBehaviour
 	{
 		Vector2 currentTarget;
 
-		if (_IsChase)
+		if (_isChase)
 		{
 			currentTarget = _playerTarget.position;
 		}
@@ -77,11 +70,11 @@ public class Enemy : MonoBehaviour
 		}
 
 		transform.position = Vector2.MoveTowards(transform.position, currentTarget, _speed * Time.deltaTime);
+		Vector2 offset = _patrolTargets[_currentIndex].position - transform.position;
 
-		if (Vector2.Distance(transform.position, _patrolTargets[_currentIndex].position) < Epsilon)
+		if (offset.sqrMagnitude < Epsilon * Epsilon)
 		{
 			_currentIndex = (++_currentIndex) % _patrolTargets.Length;
-
 		}
 
 		if (transform.position.x < currentTarget.x)

@@ -19,7 +19,7 @@ public class ItemsSearch : MonoBehaviour
 		else if (collision.TryGetComponent(out Gem gem))
 		{
 			gem.InvokePickedEvent();
-			gem.ExecuteGemBonus();
+			gem.CollectGemBonus();
 		}
 	}
 }

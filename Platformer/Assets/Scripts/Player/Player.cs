@@ -1,32 +1,27 @@
 using System;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(PlayerMovement))]
 public class Player : MonoBehaviour
 {
-	private const float AttackDistance = 2.5f;
-
-	public readonly int DoAttack = Animator.StringToHash(nameof(DoAttack));
-
 	[SerializeField] private int _damage = 20;
 	[SerializeField] private LayerMask _enemyLayer;
 
+	private const float AttackDistance = 2.5f;
+
+	private readonly int DoAttack = Animator.StringToHash(nameof(DoAttack));
+
 	private RaycastHit2D _attackHit;
-	private ItemsSearch _itemsSearch;
 	private PlayerMovement _movement;
 	private Animator _animator;
 	private float _attackReloadTime = 1f;
 	private float _lastAttackTime = 0f;
-
-	public event Action<int> Attacking;
 
 	public Health Health { get; private set; }
 
 	private void Start()
 	{
 		_movement = GetComponent<PlayerMovement>();
-		_itemsSearch = GetComponent<ItemsSearch>();
 		Health = GetComponent<Health>();
 		_animator = GetComponent<Animator>();
 	}

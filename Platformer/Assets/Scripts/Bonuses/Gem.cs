@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Gem : Item
 {
-	public void ExecuteGemBonus()
+	public void CollectGemBonus()
 	{
 		Destroy(gameObject);
 

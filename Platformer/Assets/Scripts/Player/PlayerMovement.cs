@@ -34,16 +34,15 @@ public class PlayerMovement : MonoBehaviour
 	{
 		_direction = Input.GetAxis(Horizontal);
 		_groundHit = Physics2D.BoxCast(_rigidbody.position, _boxCastSize, _boxCastAngle, Vector2.down, GroundDistance, _groundLayer);
+		_animator.SetBool(IsFalling, !_groundHit);
 
 		if (Input.GetKeyDown(KeyCode.W) && _groundHit)
 			_isJumped = true;
 
-		_animator.SetBool(IsFalling, !_groundHit);
-
 		SetDirection();
 		_animator.SetFloat(Speed, Mathf.Abs(_direction));
 
-		Moving();
+		Move();
 	}
 
 	private void FixedUpdate()
@@ -61,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
-	private void Moving()
+	private void Move()
 	{
 		Vector2 vectorDirection = new Vector2(_direction, 0f);
 		transform.Translate(_velocity * Time.deltaTime * vectorDirection);
