@@ -1,19 +1,18 @@
-using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(PlayerMovement))]
+[RequireComponent(typeof(Health))]
 public class Player : MonoBehaviour
 {
 	[SerializeField] private int _damage = 20;
 	[SerializeField] private LayerMask _enemyLayer;
+	[SerializeField] private PlayerMovement _movement;
+	[SerializeField] private Animator _animator;
 
 	private const float AttackDistance = 2.5f;
 
 	private readonly int DoAttack = Animator.StringToHash(nameof(DoAttack));
 
 	private RaycastHit2D _attackHit;
-	private PlayerMovement _movement;
-	private Animator _animator;
 	private float _attackReloadTime = 1f;
 	private float _lastAttackTime = 0f;
 
@@ -21,9 +20,7 @@ public class Player : MonoBehaviour
 
 	private void Start()
 	{
-		_movement = GetComponent<PlayerMovement>();
 		Health = GetComponent<Health>();
-		_animator = GetComponent<Animator>();
 	}
 
 	private void Update()

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
 	private const float GroundDistance = 1.2f;
@@ -13,27 +14,28 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private float _velocity = 1f;
 	[SerializeField] private float _jumpForce = 1f;
 	[SerializeField] private LayerMask _groundLayer;
+	[SerializeField] private Transform _viewTransform;
+	[SerializeField] private Animator _animator;
 
-	private Rigidbody2D _rigidbody;
-	private Animator _animator;
 	private RaycastHit2D _groundHit;
+
 	private Vector2 _boxCastSize = new Vector2(0.9f, 0.2f);
+	private Rigidbody2D _rigidbody;
 	private float _direction;
 	private float _boxCastAngle = 0f;
 	private bool _isJumped = false;
 
 	public Vector2 LookDirection { get; private set; } = new Vector2(1, 0);
 
-	private void Start()
+	private void Awake()
 	{
 		_rigidbody = GetComponent<Rigidbody2D>();
-		_animator = GetComponent<Animator>();
 	}
 
 	private void Update()
 	{
 		_direction = Input.GetAxis(Horizontal);
-		_groundHit = Physics2D.BoxCast(_rigidbody.position, _boxCastSize, _boxCastAngle, Vector2.down, GroundDistance, _groundLayer);
+		_groundHit = Physics2D.BoxCast(transform.position, _boxCastSize, _boxCastAngle, Vector2.down, GroundDistance, _groundLayer);
 		_animator.SetBool(IsFalling, !_groundHit);
 
 		if (Input.GetKeyDown(KeyCode.W) && _groundHit)
@@ -68,20 +70,15 @@ public class PlayerMovement : MonoBehaviour
 
 	private void SetDirection()
 	{
-		var rotation = transform.rotation;
-
 		if (_direction < 0)
 		{
-			rotation = Quaternion.Euler(0, 180, 0);
-			_direction *= -1;
+			_viewTransform.rotation = Quaternion.Euler(0, 180, 0);
 			LookDirection = new Vector2(-1, 0);
 		}
 		else if (_direction > 0)
 		{
-			rotation = Quaternion.Euler(0, 0, 0);
+			_viewTransform.rotation = Quaternion.Euler(0, 0, 0);
 			LookDirection = new Vector2(1, 0);
 		}
-
-		transform.rotation = rotation;
 	}
 }

@@ -15,5 +15,5 @@ public abstract class HealthBar : MonoBehaviour
 		_health.ValueChanged -= UpdateHealth;
 	}
 
-	protected abstract void UpdateHealth(int health, int maxHealth);
+	protected abstract void UpdateHealth(int health, int maxHealth);	
 }

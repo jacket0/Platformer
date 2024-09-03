@@ -1,8 +1,7 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator), typeof(Health))]
+[RequireComponent(typeof(Health))]
 public class Enemy : MonoBehaviour
 {
 	private const float DetectionDistance = 4f;
@@ -17,8 +16,9 @@ public class Enemy : MonoBehaviour
 	[SerializeField] private EnemyAttackZone _attackZone;
 	[SerializeField] private Transform[] _patrolTargets;
 	[SerializeField] private Transform _playerTarget;
+	[SerializeField] private Transform _viewTransform;
+	[SerializeField] private Animator _animator;
 
-	private Animator _animator;
 	private Coroutine _coroutine;
 	private RaycastHit2D _backVisionHit;
 	private RaycastHit2D _forwardVisinHit;
@@ -27,10 +27,13 @@ public class Enemy : MonoBehaviour
 
 	public Health Health { get; private set; }
 
-	private void Start()
+	private void Awake()
 	{
-		_animator = GetComponent<Animator>();
 		Health = GetComponent<Health>();
+	}
+
+	private void OnEnable()
+	{
 		_attackZone.Attacking += StartAttack;
 	}
 
@@ -77,13 +80,18 @@ public class Enemy : MonoBehaviour
 			_currentIndex = (++_currentIndex) % _patrolTargets.Length;
 		}
 
+		ChangeDirection(currentTarget);
+	}
+
+	private void ChangeDirection(Vector2 currentTarget)
+	{
 		if (transform.position.x < currentTarget.x)
 		{
-			transform.rotation = Quaternion.Euler(0, 0, 0);
+			_viewTransform.rotation = Quaternion.Euler(0, 0, 0);
 		}
 		if (transform.position.x > currentTarget.x)
 		{
-			transform.rotation = Quaternion.Euler(0, 180, 0);
+			_viewTransform.rotation = Quaternion.Euler(0, 180, 0);
 		}
 	}
 
