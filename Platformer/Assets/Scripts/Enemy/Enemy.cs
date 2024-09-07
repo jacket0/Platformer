@@ -44,8 +44,8 @@ public class Enemy : MonoBehaviour
 
 	private void Update()
 	{
-		_backVisionHit = Physics2D.Raycast(transform.position, Vector2.left, DetectionDistance, _playerMask);
-		_forwardVisinHit = Physics2D.Raycast(transform.position, Vector2.right, DetectionDistance, _playerMask);
+		_backVisionHit = Physics2D.Raycast(_viewTransform.position, Vector2.left, DetectionDistance, _playerMask);
+		_forwardVisinHit = Physics2D.Raycast(_viewTransform.position, Vector2.right, DetectionDistance, _playerMask);
 
 		if (_backVisionHit || _forwardVisinHit)
 		{
@@ -107,6 +107,7 @@ public class Enemy : MonoBehaviour
 
 	private void StartAttack(Player player)
 	{
+		Debug.Log(_attackZone.IsTargetDetected);
 		_coroutine = StartCoroutine(Attacking(player));
 	}
 
