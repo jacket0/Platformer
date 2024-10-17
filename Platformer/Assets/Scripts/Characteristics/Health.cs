@@ -3,15 +3,15 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-	[SerializeField] private int _health = 100;
+	[SerializeField] private float _health = 100;
 
-	public event Action<int, int> ValueChanged;
+	public event Action<float, float> ValueChanged;
 
 	public int MaxHealth { get; } = 100;
 	public int MinHealth { get; } = 0;
-	public int Value => _health;
+	public float Value => _health;
 
-	public void DecreaseHealth(int damage)
+	public void DecreaseHealth(float damage)
 	{
 		if (damage > 0)
 		{
@@ -21,7 +21,7 @@ public class Health : MonoBehaviour
 		}
 	}
 
-	public void IncreaseHealth(int heal)
+	public void IncreaseHealth(float heal)
 	{
 		if (heal > 0)
 		{

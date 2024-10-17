@@ -9,7 +9,7 @@ public class SmoothHealthBar : HealthBar
 
 	private Coroutine _coroutine;
 
-	protected override void UpdateHealth(int health, int maxHealth)
+	protected override void UpdateHealth(float health, float maxHealth)
 	{
 		if (_coroutine != null)
 			StopCoroutine(_coroutine);
@@ -23,7 +23,7 @@ public class SmoothHealthBar : HealthBar
 			StopCoroutine(_coroutine);
 	}
 
-	private IEnumerator SmoothFill(int health, int maxHealth)
+	private IEnumerator SmoothFill(float health, float maxHealth)
 	{
 		float goal = (float)health / maxHealth;
 

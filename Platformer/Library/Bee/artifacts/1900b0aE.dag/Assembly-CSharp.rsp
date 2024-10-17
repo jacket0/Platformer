@@ -382,6 +382,10 @@
 "Assets/InfinityPBR - Magic Pig Games/Progress Bar/Scripts/ProgressBar.cs"
 "Assets/InfinityPBR - Magic Pig Games/Progress Bar/Scripts/ProgressBarInspectorTest.cs"
 "Assets/InfinityPBR - Magic Pig Games/Progress Bar/Scripts/ScrollingUVs.cs"
+"Assets/Scripts/Abilities/Ability.cs"
+"Assets/Scripts/Abilities/AbilityBar.cs"
+"Assets/Scripts/Abilities/AbilitySwitcher.cs"
+"Assets/Scripts/Abilities/Vampirism.cs"
 "Assets/Scripts/Bonuses/BonusSpawner.cs"
 "Assets/Scripts/Bonuses/Gem.cs"
 "Assets/Scripts/Bonuses/Healing.cs"
@@ -396,6 +400,7 @@
 "Assets/Scripts/Player/ItemsSearch.cs"
 "Assets/Scripts/Player/Player.cs"
 "Assets/Scripts/Player/PlayerMovement.cs"
+"Assets/Scripts/SliderAbilityBar.cs"
 -langversion:9.0
 
 /deterministic

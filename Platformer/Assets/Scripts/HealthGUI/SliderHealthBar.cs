@@ -7,7 +7,7 @@ public class SliderHealthBar : HealthBar
 	[SerializeField] private RectTransform _targetCanvas;
 	[SerializeField] private Transform _followedObject;
 
-	protected override void UpdateHealth(int health, int maxHealth)
+	protected override void UpdateHealth(float health, float maxHealth)
 	{
 		_slider.value = (float)health / maxHealth;
 	}
