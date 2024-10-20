@@ -2,23 +2,35 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class Vampirism : Ability
 {
     [SerializeField] private float _stealingPower = 0.1f;
+    [SerializeField] private SpriteRenderer _sprite;
 
     private Coroutine _coroutine;
 
-    public event Action Reloading;
+    public event Action<float, bool> LifeStealing;
+
+    private void Awake()
+    {
+        _sprite = GetComponent<SpriteRenderer>();
+    }
 
     private void OnEnable()
     {
-        _switcher.VampirismActivated += SwitchActive;
+        _player.VampirismActivated += SwitchActive;
     }
 
     private void OnDisable()
     {
-        StopCoroutine(_coroutine);
-        _switcher.VampirismActivated -= SwitchActive;
+        if (_coroutine != null)
+            StopCoroutine(_coroutine);
+
+        if (_reloadCoroutine != null)
+            StopCoroutine(_reloadCoroutine);
+
+        _player.VampirismActivated -= SwitchActive;
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -29,16 +41,26 @@ public class Vampirism : Ability
         }
     }
 
-    protected IEnumerator HealthStealing()
+    private IEnumerator HitPointStealing()
     {
+        _sprite.enabled = !_sprite.enabled;
+        LifeStealing?.Invoke(_duration, IsAvailable);   
         yield return new WaitForSeconds(_duration);
-        Reloading.Invoke();
-        gameObject.SetActive(false);
+        _reloadCoroutine = StartCoroutine(AbilityReloading());
+    }
+
+    private IEnumerator AbilityReloading()
+    {
+        _sprite.enabled = !_sprite.enabled;
+        LifeStealing?.Invoke(_vampirismReloadTime, !IsAvailable);
+        yield return new WaitForSeconds(_vampirismReloadTime);
+        IsAvailable = true;
     }
 
     private void SwitchActive()
     {
-        _coroutine = StartCoroutine(HealthStealing());
+        IsAvailable = false;
+        _coroutine = StartCoroutine(HitPointStealing());
     }
 }
 
