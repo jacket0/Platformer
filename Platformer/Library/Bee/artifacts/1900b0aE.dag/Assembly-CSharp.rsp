@@ -383,8 +383,6 @@
 "Assets/InfinityPBR - Magic Pig Games/Progress Bar/Scripts/ProgressBarInspectorTest.cs"
 "Assets/InfinityPBR - Magic Pig Games/Progress Bar/Scripts/ScrollingUVs.cs"
 "Assets/Scripts/Abilities/Ability.cs"
-"Assets/Scripts/Abilities/AbilityBar.cs"
-"Assets/Scripts/Abilities/AbilitySwitcher.cs"
 "Assets/Scripts/Abilities/Vampirism.cs"
 "Assets/Scripts/Bonuses/BonusSpawner.cs"
 "Assets/Scripts/Bonuses/Gem.cs"

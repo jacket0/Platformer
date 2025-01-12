@@ -107,7 +107,6 @@ public class Enemy : MonoBehaviour
 
 	private void StartAttack(Player player)
 	{
-		Debug.Log(_attackZone.IsTargetDetected);
 		_coroutine = StartCoroutine(Attacking(player));
 	}
 

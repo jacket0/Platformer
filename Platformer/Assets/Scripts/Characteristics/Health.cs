@@ -9,7 +9,6 @@ public class Health : MonoBehaviour
 
 	public int MaxHealth { get; } = 100;
 	public int MinHealth { get; } = 0;
-	public float Value => _health;
 
 	public void DecreaseHealth(float damage)
 	{

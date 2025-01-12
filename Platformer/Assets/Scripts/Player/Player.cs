@@ -9,9 +9,6 @@ public class Player : MonoBehaviour
 	[SerializeField] private PlayerMovement _movement;
 	[SerializeField] private Animator _animator;
 
-    [SerializeField] private KeyCode _vamprirsmKey;
-    [SerializeField] private Vampirism _vampirism;
-
     private const float AttackDistance = 2.5f;
 
 	private readonly int DoAttack = Animator.StringToHash(nameof(DoAttack));
@@ -20,12 +17,9 @@ public class Player : MonoBehaviour
 	private float _attackReloadTime = 1f;
 	private float _lastAttackTime = 0f;
 
-    public event Action VampirismActivated;
-
     public Health Health { get; private set; }
 
-
-	private void Start()
+	private void Awake()
 	{
 		Health = GetComponent<Health>();
 	}
@@ -33,16 +27,7 @@ public class Player : MonoBehaviour
 	private void Update()
 	{
 		Attack();
-		VampirismOn();
 	}
-
-    private void VampirismOn()
-    {
-        if (_vampirism.IsAvailable && Input.GetKeyDown(_vamprirsmKey))
-        {
-            VampirismActivated?.Invoke();
-        }
-    }
 
     private void Attack()
 	{
