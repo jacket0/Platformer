@@ -117,7 +117,7 @@ public class Enemy : MonoBehaviour
 		while (_attackZone.IsTargetDetected)
 		{
 			_animator.SetTrigger(DoAttack);
-			player.Health.DecreaseHealth(_damage);
+			player.Health.DecreaseValue(_damage);
 			yield return wait;
 		}
 	}

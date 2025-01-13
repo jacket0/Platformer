@@ -2,25 +2,26 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerInput))]
 public class Vampirism : Ability
 {
     [SerializeField] private float _stealingPower = 0.1f;
-    [SerializeField] private SpriteRenderer _sprite;
-    [SerializeField] private KeyCode _vamprirsmKey;
     [SerializeField] private LayerMask _enemyLayer;
+    [SerializeField] private Sprite _sprite;
 
     private Coroutine _reloadCoroutine;
     private Coroutine _activeCoroutine;
     private WaitForSeconds _relaodTime;
     private float _radius;
+    private PlayerInput _playerInput;
 
     public event Action<float, bool> LifeStealing;
 
     private void Awake()
     {
-        _sprite.enabled = false;
         _relaodTime = new WaitForSeconds(ReloadTime);
-        _radius = _sprite.transform.localScale.x * 0.5f;
+        _radius = _sprite.GetSize();
+        _playerInput = GetComponent<PlayerInput>();
     }
 
     private void OnDisable()
@@ -30,22 +31,18 @@ public class Vampirism : Ability
 
         if (_reloadCoroutine != null)
             StopCoroutine(_reloadCoroutine);
+
+        _playerInput.VampirismActivated -= SwitchActive;
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        VampirismOn();
-    }
-
-    private void VampirismOn()
-    {
-        if (Input.GetKeyDown(_vamprirsmKey))
-            SwitchActive();
+        _playerInput.VampirismActivated += SwitchActive;
     }
 
     private IEnumerator HitPointStealing()
     {
-        _sprite.enabled = true;
+        _sprite.Show();
         float wait = 0;
         LifeStealing?.Invoke(Duration, IsAvailable);
 
@@ -55,15 +52,15 @@ public class Vampirism : Ability
 
             if (enemy != null)
             {
-                enemy.Health.DecreaseHealth(_stealingPower);
-                Player.Health.IncreaseHealth(_stealingPower);
+                enemy.Health.DecreaseValue(_stealingPower);
+                Player.Health.IncreaseValue(_stealingPower);
             }
 
             wait = Mathf.MoveTowards(wait, Duration, Time.deltaTime);
             yield return null;
         }
 
-        _sprite.enabled = false;
+        _sprite.Hide();
         _reloadCoroutine = StartCoroutine(AbilityReloading());
     }
 

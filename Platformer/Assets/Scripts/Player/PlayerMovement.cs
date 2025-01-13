@@ -7,17 +7,13 @@ public class PlayerMovement : MonoBehaviour
 
 	private readonly string Horizontal = nameof(Horizontal);
 
-	public readonly int Speed = Animator.StringToHash(nameof(Speed));
-	public readonly int DoJump = Animator.StringToHash(nameof(DoJump));
-	public readonly int IsFalling = Animator.StringToHash(nameof(IsFalling));
-
 	[SerializeField] private float _velocity = 1f;
 	[SerializeField] private float _jumpForce = 1f;
 	[SerializeField] private LayerMask _groundLayer;
 	[SerializeField] private Transform _viewTransform;
-	[SerializeField] private Animator _animator;
+    [SerializeField] private PlayerAnimator _animator;
 
-	private RaycastHit2D _groundHit;
+    private RaycastHit2D _groundHit;
 
 	private Vector2 _boxCastSize = new Vector2(0.9f, 0.2f);
 	private Rigidbody2D _rigidbody;
@@ -36,14 +32,13 @@ public class PlayerMovement : MonoBehaviour
 	{
 		_direction = Input.GetAxis(Horizontal);
 		_groundHit = Physics2D.BoxCast(transform.position, _boxCastSize, _boxCastAngle, Vector2.down, GroundDistance, _groundLayer);
-		_animator.SetBool(IsFalling, !_groundHit);
+		_animator.PlayFalling(_groundHit);
 
 		if (Input.GetKeyDown(KeyCode.W) && _groundHit)
 			_isJumped = true;
 
 		SetDirection();
-		_animator.SetFloat(Speed, Mathf.Abs(_direction));
-
+		_animator.PlayRun(_direction);
 		Move();
 	}
 
@@ -56,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		if (_isJumped)
 		{
-			_animator.SetTrigger(DoJump);
+			_animator.PlayJump();
 			_rigidbody.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
 			_isJumped = false;
 		}

@@ -391,14 +391,17 @@
 "Assets/Scripts/Characteristics/Health.cs"
 "Assets/Scripts/Enemy/Enemy.cs"
 "Assets/Scripts/Enemy/EnemyAttackZone.cs"
-"Assets/Scripts/HealthGUI/HealthBar.cs"
-"Assets/Scripts/HealthGUI/SliderHealthBar.cs"
-"Assets/Scripts/HealthGUI/SmoothHealthBar.cs"
-"Assets/Scripts/HealthGUI/TextHealthBar.cs"
+"Assets/Scripts/GUI/HealthGUI/HealthBar.cs"
+"Assets/Scripts/GUI/HealthGUI/SliderHealthBar.cs"
+"Assets/Scripts/GUI/HealthGUI/SmoothHealthBar.cs"
+"Assets/Scripts/GUI/HealthGUI/TextHealthBar.cs"
+"Assets/Scripts/GUI/SliderAbilityBar.cs"
 "Assets/Scripts/Player/ItemsSearch.cs"
 "Assets/Scripts/Player/Player.cs"
+"Assets/Scripts/Player/PlayerAnimator.cs"
+"Assets/Scripts/Player/PlayerInput.cs"
 "Assets/Scripts/Player/PlayerMovement.cs"
-"Assets/Scripts/SliderAbilityBar.cs"
+"Assets/Scripts/View/Sprite.cs"
 -langversion:9.0
 
 /deterministic

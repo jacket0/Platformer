@@ -14,7 +14,7 @@ public class ItemsSearch : MonoBehaviour
 		if (collision.TryGetComponent(out Healing healing))
 		{
 			healing.InvokePickedEvent();
-			_player.Health.IncreaseHealth(healing.ExecuteHealing());
+			_player.Health.IncreaseValue(healing.ExecuteHealing());
 		}
 		else if (collision.TryGetComponent(out Gem gem))
 		{
